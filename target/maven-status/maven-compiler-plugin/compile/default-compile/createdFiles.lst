@@ -1,3 +1,4 @@
+sk\stu\fiit\setLang$1.class
 sk\stu\fiit\Dashboard.class
 sk\stu\fiit\Customer.class
 sk\stu\fiit\Accomodation.class
@@ -6,5 +7,6 @@ sk\stu\fiit\Settings.class
 sk\stu\fiit\Dashboard$1.class
 sk\stu\fiit\Room.class
 sk\stu\fiit\MainLogic.class
+sk\stu\fiit\setLang.class
 sk\stu\fiit\Payment.class
 sk\stu\fiit\Service.class

@@ -21,6 +21,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 
+
 /**
  *
  * @author DADO
@@ -40,7 +41,7 @@ public class MainLogic implements Serializable{
     public Settings getProgSettings() {
         return progSettings;
     }
-    
+    //FIX with Json seriallization
     private File programDataFile;
     
     private MainLogic thisLogic;
@@ -50,16 +51,19 @@ public class MainLogic implements Serializable{
     private static ResourceBundle languageBundle;
 
     public MainLogic(String dataFileName) {
-        
-
-       
+               
         loadOrInicialise(dataFileName);
-        
-        
         
     }
     
+    public static void setLocaleAndRBundle(String lang){
+        
+    }
     
+    public static void setLocaleAndRBundle(Locale lang){
+        progLocale = lang;
+        languageBundle = ResourceBundle.getBundle("localBundle", lang);
+    }
     
     
     private void loadOrInicialise(String dateFileName){
@@ -74,7 +78,7 @@ public class MainLogic implements Serializable{
             //MainLogic.accd = importedMainLogic.accd;
             //MainLogic.cust = importedMainLogic.cust;
             //MainLogic.resv = importedMainLogic.resv;
-            this.languageBundle = importedMainLogic.progSettings.getRBLanguage();
+            
             
                     
         } catch (Exception e) {

@@ -7,11 +7,16 @@ package sk.stu.fiit;
 
 import java.io.Serializable;
 
+
 /**
  *
  * @author DADO
  */
-public class Room implements Serializable{
+
+
+public class Room {
+    
+    
     private static final long serialVersionUID = 12324L;
     
 }

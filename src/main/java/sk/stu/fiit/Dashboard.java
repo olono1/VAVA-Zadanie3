@@ -7,6 +7,11 @@ package sk.stu.fiit;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 
 /**
  *
@@ -20,7 +25,17 @@ public class Dashboard extends javax.swing.JFrame {
      */
     public Dashboard() {
         this.logic = new MainLogic("HotelData");
-        this.language = MainLogic.getLanguageSetting();
+        
+        setLang langWindow = new setLang();
+        langWindow.setVisible(true);
+        
+        langWindow.OkBtn.addActionListener(e->{
+            MainLogic.setLocaleAndRBundle(langWindow.getLanguageSelected());
+            langWindow.setVisible(false);
+            
+        });
+        
+
         
         //this.language = MainLogic.getLanguageSetting();
         initComponents();
@@ -37,12 +52,16 @@ public class Dashboard extends javax.swing.JFrame {
 
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
+        jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jMenu1.setText(language.getString("FILE"));
+
+        jMenuItem2.setText("Nacitať údaje zo súboru...");
+        jMenu1.add(jMenuItem2);
 
         jMenuItem1.setText("Settings...");
         jMenu1.add(jMenuItem1);
@@ -109,6 +128,22 @@ public class Dashboard extends javax.swing.JFrame {
         
       // System.out.println(MainLogic.getProgSettings().getRBLanguage().getString("welcome"));
        System.out.println(rbSK.getString("welcome"));
+       
+        MainLogic.addRoom(new Room(new RoomCategory(80, "High class"), "A130", "Great room trust me :D"));
+        MainLogic.addRoom(new Room(new RoomCategory(50, "Low class"), "C150", "Great room trust me :D"));
+        MainLogic.addRoom(new Room(new RoomCategory(150, "High premium class"), "A155", "Great room trust me :D"));
+       
+       
+        
+           
+    }
+    
+    private static void objToXmlTest() throws JAXBException{
+            JAXBContext context = JAXBContext.newInstance(MainLogic.class);
+            Marshaller m =context.createMarshaller();
+            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+            //https://www.javaguides.net/2018/10/how-to-convert-java-object-to-xml-jaxb-marshalling.html
+            m.marshal(logic, System.out);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -116,5 +151,6 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     // End of variables declaration//GEN-END:variables
 }
