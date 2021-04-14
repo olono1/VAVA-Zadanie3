@@ -12,11 +12,15 @@ import java.util.Locale;
  * @author DADO
  */
 public class setLang extends javax.swing.JFrame {
-
+    
+    MainLogic logic;
+    
     /**
      * Creates new form setLang
      */
     public setLang() {
+        this.logic = new MainLogic();
+        
         initComponents();
     }
 
@@ -49,6 +53,11 @@ public class setLang extends javax.swing.JFrame {
         jPanel1.setLayout(flowLayout1);
 
         OkBtn.setText("OK");
+        OkBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                OkBtnMouseReleased(evt);
+            }
+        });
         jPanel1.add(OkBtn);
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.PAGE_END);
@@ -56,6 +65,17 @@ public class setLang extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void OkBtnMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_OkBtnMouseReleased
+        // TODO add your handling code here:
+        
+        Locale lang = getLanguageSelected();
+        MainLogic.setLocaleAndRBundle(lang);
+        logic.startDashboard(logic);
+        this.setVisible(false);
+        this.dispose();
+        
+    }//GEN-LAST:event_OkBtnMouseReleased
 
     /**
      * @param args the command line arguments

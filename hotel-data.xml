@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<hoteldata>
+    <roomList>
+        <room>
+            <roomId>AVIP Private suite 5</roomId>
+            <roomCtg>
+                <pricePerNight>80.0</pricePerNight>
+                <note>High class</note>
+            </roomCtg>
+            <note>Great room trust me :D</note>
+        </room>
+        <room>
+            <roomId>C150</roomId>
+            <roomCtg>
+                <pricePerNight>50.0</pricePerNight>
+                <note>Low class</note>
+            </roomCtg>
+            <note>Great room trust me :D</note>
+        </room>
+        <room>
+            <roomId>A155</roomId>
+            <roomCtg>
+                <pricePerNight>150.0</pricePerNight>
+                <note>High premium class</note>
+            </roomCtg>
+            <note>Great room trust me :D</note>
+        </room>
+    </roomList>
+</hoteldata>

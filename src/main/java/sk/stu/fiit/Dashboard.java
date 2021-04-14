@@ -5,6 +5,8 @@
  */
 package sk.stu.fiit;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -12,6 +14,7 @@ import java.util.logging.Logger;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 
 /**
  *
@@ -23,19 +26,35 @@ public class Dashboard extends javax.swing.JFrame {
     /**
      * Creates new form Dashboard
      */
-    public Dashboard() {
-        this.logic = new MainLogic("HotelData");
-        
-        setLang langWindow = new setLang();
-        langWindow.setVisible(true);
-        
-        langWindow.OkBtn.addActionListener(e->{
-            MainLogic.setLocaleAndRBundle(langWindow.getLanguageSelected());
-            langWindow.setVisible(false);
-            
-        });
+    public Dashboard(MainLogic m, ResourceBundle r){
+        this.logic = m;
+        this.language = r;
         
 
+        
+        
+        
+            
+            MainLogic.addRoom(Room.getRoomInstance(RoomCategory.getRoomCategoryInstance(80, "High class"), "A111", "Great room trust me :D"));
+            MainLogic.addRoom( Room.getRoomInstance(RoomCategory.getRoomCategoryInstance(50, "Low class"), "C555", "Great room trust me :D"));
+            MainLogic.addRoom( Room.getRoomInstance(RoomCategory.getRoomCategoryInstance(150, "High premium class"), "A777", "Great room trust me :D"));
+            /*
+            try {
+            objToXmlTest();
+            } catch (JAXBException ex) {
+            Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            */
+        
+
+           
+            
+        try {    
+            xmlToObjTest();
+        } catch (JAXBException ex) {
+            Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         
         //this.language = MainLogic.getLanguageSetting();
         initComponents();
@@ -50,107 +69,190 @@ public class Dashboard extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        topPanel = new javax.swing.JPanel();
+        newReservationBtn = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        leftPanel = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jList2 = new javax.swing.JList<>();
+        rightPanel = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        centrePanel = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jList1 = new javax.swing.JList<>();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
-        jMenuItem2 = new javax.swing.JMenuItem();
-        jMenuItem1 = new javax.swing.JMenuItem();
+        expFileMenu = new javax.swing.JMenuItem();
+        impFileMenu = new javax.swing.JMenuItem();
+        settingsMenu = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
+        newAccomodationMenu = new javax.swing.JMenuItem();
+        jSeparator1 = new javax.swing.JPopupMenu.Separator();
+        newCustomerMenu = new javax.swing.JMenuItem();
+        AllCustomersMenu = new javax.swing.JMenuItem();
+        servicesMenu = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jSeparator2 = new javax.swing.JPopupMenu.Separator();
+        jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        topPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+
+        newReservationBtn.setText(language.getString("NEWREZRV"));
+        topPanel.add(newReservationBtn);
+
+        jButton3.setText(language.getString("CHECKIN"));
+        topPanel.add(jButton3);
+
+        getContentPane().add(topPanel, java.awt.BorderLayout.PAGE_START);
+
+        leftPanel.setLayout(new javax.swing.BoxLayout(leftPanel, javax.swing.BoxLayout.Y_AXIS));
+
+        jLabel2.setText(language.getString("RESERVS"));
+        leftPanel.add(jLabel2);
+
+        jList2.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        jList2.setPreferredSize(new java.awt.Dimension(150, 80));
+        jScrollPane2.setViewportView(jList2);
+
+        leftPanel.add(jScrollPane2);
+
+        getContentPane().add(leftPanel, java.awt.BorderLayout.LINE_START);
+
+        rightPanel.setLayout(new javax.swing.BoxLayout(rightPanel, javax.swing.BoxLayout.Y_AXIS));
+
+        jButton1.setText(language.getString("ADDSERVICE"));
+        rightPanel.add(jButton1);
+
+        jButton2.setText(language.getString("CHECKOUT"));
+        rightPanel.add(jButton2);
+
+        getContentPane().add(rightPanel, java.awt.BorderLayout.LINE_END);
+
+        centrePanel.setLayout(new javax.swing.BoxLayout(centrePanel, javax.swing.BoxLayout.Y_AXIS));
+
+        jLabel1.setText(language.getString("ACTIVEACCM"));
+        centrePanel.add(jLabel1);
+
+        jList1.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane1.setViewportView(jList1);
+
+        centrePanel.add(jScrollPane1);
+
+        getContentPane().add(centrePanel, java.awt.BorderLayout.CENTER);
+
         jMenu1.setText(language.getString("FILE"));
 
-        jMenuItem2.setText("Nacitať údaje zo súboru...");
-        jMenu1.add(jMenuItem2);
+        expFileMenu.setText(language.getString("FILEEXP"));
+        jMenu1.add(expFileMenu);
 
-        jMenuItem1.setText("Settings...");
-        jMenu1.add(jMenuItem1);
+        impFileMenu.setText(language.getString("FILEIMP"));
+        jMenu1.add(impFileMenu);
+
+        settingsMenu.setText(language.getString("SETTINGS"));
+        jMenu1.add(settingsMenu);
 
         jMenuBar1.add(jMenu1);
 
-        jMenu2.setText("Edit");
+        jMenu2.setText(language.getString("ACCOMON"));
+
+        newAccomodationMenu.setText(language.getString("NEWACCOM"));
+        jMenu2.add(newAccomodationMenu);
+        jMenu2.add(jSeparator1);
+
+        newCustomerMenu.setText(language.getString("NEWCUST"));
+        jMenu2.add(newCustomerMenu);
+
+        AllCustomersMenu.setText(language.getString("LISTCUST"));
+        jMenu2.add(AllCustomersMenu);
+
         jMenuBar1.add(jMenu2);
 
-        setJMenuBar(jMenuBar1);
+        servicesMenu.setText(language.getString("SERVICES"));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 755, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 351, Short.MAX_VALUE)
-        );
+        jMenuItem1.setText(language.getString("NEWSERVICE"));
+        servicesMenu.add(jMenuItem1);
+        servicesMenu.add(jSeparator2);
+
+        jMenuItem2.setText(language.getString("NEWROOM"));
+        servicesMenu.add(jMenuItem2);
+
+        jMenuItem3.setText(language.getString("ALLROOMS"));
+        servicesMenu.add(jMenuItem3);
+
+        jMenuBar1.add(servicesMenu);
+
+        setJMenuBar(jMenuBar1);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Dashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Dashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Dashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Dashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Dashboard().setVisible(true);
-            }
-        });
-        
-       Locale skLocal = new Locale("sk", "SK");
-       Locale enLocal  =new Locale ("en", "US");
-       ResourceBundle rbEN = ResourceBundle.getBundle("localBundle", enLocal);
-       ResourceBundle rbSK = ResourceBundle.getBundle("localBundle", skLocal);
-        
-      // System.out.println(MainLogic.getProgSettings().getRBLanguage().getString("welcome"));
-       System.out.println(rbSK.getString("welcome"));
-       
-        MainLogic.addRoom(new Room(new RoomCategory(80, "High class"), "A130", "Great room trust me :D"));
-        MainLogic.addRoom(new Room(new RoomCategory(50, "Low class"), "C150", "Great room trust me :D"));
-        MainLogic.addRoom(new Room(new RoomCategory(150, "High premium class"), "A155", "Great room trust me :D"));
-       
-       
-        
-           
-    }
     
-    private static void objToXmlTest() throws JAXBException{
+    private void objToXmlTest() throws JAXBException{
             JAXBContext context = JAXBContext.newInstance(MainLogic.class);
             Marshaller m =context.createMarshaller();
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             //https://www.javaguides.net/2018/10/how-to-convert-java-object-to-xml-jaxb-marshalling.html
-            m.marshal(logic, System.out);
+            m.marshal(logic, new File("hotel-data.xml"));
+    }
+    
+    
+    private void xmlToObjTest() throws JAXBException{
+        
+        JAXBContext context = JAXBContext.newInstance(MainLogic.class);
+        Unmarshaller un = context.createUnmarshaller();
+        MainLogic logicXml = (MainLogic) un.unmarshal(new File("hotel-data.xml"));
+        
+        ArrayList<Room> rooms = MainLogic.getRooms();
+        for (Room room : rooms) {
+            System.out.println(room.getRoomId());
+        }
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem AllCustomersMenu;
+    private javax.swing.JPanel centrePanel;
+    private javax.swing.JMenuItem expFileMenu;
+    private javax.swing.JMenuItem impFileMenu;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JList<String> jList1;
+    private javax.swing.JList<String> jList2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JPopupMenu.Separator jSeparator1;
+    private javax.swing.JPopupMenu.Separator jSeparator2;
+    private javax.swing.JPanel leftPanel;
+    private javax.swing.JMenuItem newAccomodationMenu;
+    private javax.swing.JMenuItem newCustomerMenu;
+    private javax.swing.JButton newReservationBtn;
+    private javax.swing.JPanel rightPanel;
+    private javax.swing.JMenu servicesMenu;
+    private javax.swing.JMenuItem settingsMenu;
+    private javax.swing.JPanel topPanel;
     // End of variables declaration//GEN-END:variables
 }

@@ -30,12 +30,22 @@ import javax.xml.bind.annotation.XmlRootElement;
  * 
  * TODO: WORK ON SERIALIZATION
  */
+
+@XmlRootElement(name = "hoteldata")
 public class MainLogic implements Serializable{
     
     private static final long serialVersionUID = 12324L;
     
+    @XmlElementWrapper(name = "Accomodations")
+    @XmlElement(name = "accomod")
     private static ArrayList<Accomodation> accd;
+    
+    @XmlElementWrapper(name = "Customers")
+    @XmlElement(name = "customer")
     private static ArrayList<Customer> cust;
+    
+    @XmlElementWrapper(name = "Rezervations")
+    @XmlElement(name = "rezervation")
     private static ArrayList<Reservation> resv;
     
     @XmlElementWrapper(name = "roomList")
@@ -53,9 +63,9 @@ public class MainLogic implements Serializable{
     private static Locale progLocale;
     private static ResourceBundle languageBundle;
 
-    public MainLogic(String dataFileName) {
+    public MainLogic() {
                
-        loadOrInicialise(dataFileName);
+        loadOrInicialise();
         
     }
     
@@ -69,31 +79,14 @@ public class MainLogic implements Serializable{
     }
     
     
-    private void loadOrInicialise(String dateFileName){
-        this.programDataFile = new File(dateFileName);
+    private void loadOrInicialise(){
         
-        try {
-            FileInputStream dataAndSettingImport = new FileInputStream(programDataFile);
-            ObjectInputStream MainLogicObjectImport = new ObjectInputStream(dataAndSettingImport);
-            MainLogic importedMainLogic = (MainLogic) MainLogicObjectImport.readObject();
-            
-            
-            //MainLogic.accd = importedMainLogic.accd;
-            //MainLogic.cust = importedMainLogic.cust;
-            //MainLogic.resv = importedMainLogic.resv;
-            
-            
-                    
-        } catch (Exception e) {
             
             this.logger.info("Created new Collections - reason: No file found");
             MainLogic.accd = new ArrayList<Accomodation>();
             MainLogic.cust = new ArrayList<>();
             MainLogic.resv = new ArrayList<>();
-
-        }
-        
-
+            MainLogic.rooms = new ArrayList<>();
         
     }
     
@@ -126,8 +119,16 @@ public class MainLogic implements Serializable{
         return languageBundle;
                 
     }
+
+    public static ArrayList<Room> getRooms() {
+        return rooms;
+    }
     
-    
+    public void startDashboard(MainLogic m){
+        Dashboard hotelDash = new Dashboard(m,languageBundle);
+        hotelDash.setVisible(true);
+        
+    }
     
     
 }

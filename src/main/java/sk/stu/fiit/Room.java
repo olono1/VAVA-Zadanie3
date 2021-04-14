@@ -28,8 +28,11 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class Room {
     
+    @XmlElement
     private RoomCategory roomCtg;
+    @XmlElement
     private String roomId;
+    @XmlElement
     private String note;
     
     @XmlElementWrapper(name = "roomImages")
@@ -54,10 +57,21 @@ public class Room {
         return imagesPaths;
     }
 
-    public Room(RoomCategory roomCtg, String roomId, String note) {
+    public Room() {
+
+    }
+    
+    public void setRoomAttrib(RoomCategory roomCtg, String roomId, String note){
         this.roomCtg = roomCtg;
         this.roomId = roomId;
         this.note = note;
+    }
+    
+    public static Room getRoomInstance(RoomCategory roomCtg, String roomId, String note){
+        Room r = new Room();
+        r.setRoomAttrib(roomCtg,  roomId, note);
+        
+        return r;
     }
     
     public void addImagePath(String path){
