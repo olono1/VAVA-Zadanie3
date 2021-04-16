@@ -13,12 +13,17 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import java.time.LocalDate;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
@@ -52,21 +57,75 @@ public class MainLogic implements Serializable{
     @XmlElement(name = "room")
     private static ArrayList<Room> rooms;
     
-
+    private static LocalDate currentDate;
+    private static DateTimeFormatter dateFormat;
 
     //FIX with Json seriallization
     private File programDataFile;
     
     private MainLogic thisLogic;
+    private static String datePatern;
+
+    public static DateTimeFormatter getDateFormat() {
+        return dateFormat;
+    }
+
+    
+    
+    
     
     private static final Logger logger = Logger.getLogger(MainLogic.class);
     private static Locale progLocale;
     private static ResourceBundle languageBundle;
 
     public MainLogic() {
-               
+        dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        currentDate = LocalDate.now();
         loadOrInicialise();
         
+    }
+    
+    public static LocalDate getCurrentDate(){
+        return currentDate;
+    }
+    
+    public static void nextDay(){
+        currentDate.plusDays(1);
+        updateAccomodations();
+    }
+    
+    public static void prevDay(){
+        currentDate.minusDays(1);
+        updateAccomodations();
+    }
+    
+    
+    public static void addCustomer(Customer c){
+        for (Customer customer : cust) {
+            if(customer.getName().equals(c.getName())){
+                logger.warn("Customer with specified name already exists");
+            }
+        }
+        cust.add(c);
+    }
+    
+    private static void updateAccomodations() {
+        for (Accomodation accomodation : accd) {
+            //Check if active
+            if(currentDate.compareTo(accomodation.dateFromGet()) >= 0){
+                accomodation.setIsActive(true);
+                
+            }else{
+                accomodation.setIsActive(false);
+                accomodation.setIsEnded(false);
+            }
+                
+            //Check if ended
+            if(currentDate.compareTo(accomodation.dateToGet()) > 0 ){
+                accomodation.setIsActive(false);
+                accomodation.setIsEnded(true);
+            }
+        }
     }
     
     public static void setLocaleAndRBundle(String lang){
@@ -94,6 +153,14 @@ public class MainLogic implements Serializable{
     
     public static void addRoom(Room roomToAdd){
         rooms.add(roomToAdd);
+    }
+    
+    public static void addAccomodation(Accomodation a){
+        accd.add(a);
+    }
+    
+    public static void addResv(Reservation r){
+        resv.add(r);
     }
     
     
@@ -129,6 +196,21 @@ public class MainLogic implements Serializable{
         hotelDash.setVisible(true);
         
     }
+
+    public static ArrayList<Customer> getCustomersList() {
+        return cust;
+    }
+
+    public static ArrayList<Reservation> getReservationsList() {
+        return resv;
+    }
+
+    public static ArrayList<Accomodation> getAccommodation() {
+        return accd;
+    }
+    
+    
+    
     
     
 }

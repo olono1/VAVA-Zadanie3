@@ -6,15 +6,22 @@
 package sk.stu.fiit;
 
 import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import org.apache.log4j.chainsaw.Main;
 
 /**
  *
@@ -38,26 +45,24 @@ public class Dashboard extends javax.swing.JFrame {
             MainLogic.addRoom(Room.getRoomInstance(RoomCategory.getRoomCategoryInstance(80, "High class"), "A111", "Great room trust me :D"));
             MainLogic.addRoom( Room.getRoomInstance(RoomCategory.getRoomCategoryInstance(50, "Low class"), "C555", "Great room trust me :D"));
             MainLogic.addRoom( Room.getRoomInstance(RoomCategory.getRoomCategoryInstance(150, "High premium class"), "A777", "Great room trust me :D"));
-            /*
-            try {
-            objToXmlTest();
-            } catch (JAXBException ex) {
-            Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            */
+      
+            MainLogic.addResv(Reservation.getInstance(LocalDateTime.now(), LocalDateTime.now().plusDays(5), MainLogic.getRooms().get(1), Customer.getInstance("Oliver U")));
+            
         
 
            
-            
+       /*     
         try {    
             xmlToObjTest();
         } catch (JAXBException ex) {
             Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+        */
         
         //this.language = MainLogic.getLanguageSetting();
         initComponents();
+        currentDateLbl.setText(MainLogic.getCurrentDate().format(MainLogic.getDateFormat()));
+        populateListsAccmResv();
     }
 
     /**
@@ -72,32 +77,36 @@ public class Dashboard extends javax.swing.JFrame {
         topPanel = new javax.swing.JPanel();
         newReservationBtn = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        jToggleButton1 = new javax.swing.JToggleButton();
+        jButton1 = new javax.swing.JButton();
+        currentDateLbl = new javax.swing.JLabel();
+        jButton2 = new javax.swing.JButton();
         leftPanel = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jList2 = new javax.swing.JList<>();
+        reservationsList = new javax.swing.JList<>();
         rightPanel = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        addServiceBtn = new javax.swing.JButton();
+        checkOutBtn = new javax.swing.JButton();
         centrePanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
+        accmList = new javax.swing.JList<>();
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
+        FilejMenu = new javax.swing.JMenu();
         expFileMenu = new javax.swing.JMenuItem();
         impFileMenu = new javax.swing.JMenuItem();
         settingsMenu = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
+        accomjMenu = new javax.swing.JMenu();
         newAccomodationMenu = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         newCustomerMenu = new javax.swing.JMenuItem();
         AllCustomersMenu = new javax.swing.JMenuItem();
         servicesMenu = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
+        newServiceMenu = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
-        jMenuItem2 = new javax.swing.JMenuItem();
-        jMenuItem3 = new javax.swing.JMenuItem();
+        newRoomMenu = new javax.swing.JMenuItem();
+        allRoomsMenu = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -107,7 +116,24 @@ public class Dashboard extends javax.swing.JFrame {
         topPanel.add(newReservationBtn);
 
         jButton3.setText(language.getString("CHECKIN"));
+        jButton3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                jButton3MouseReleased(evt);
+            }
+        });
         topPanel.add(jButton3);
+
+        jToggleButton1.setText(language.getString("ENDNOTPAY"));
+        topPanel.add(jToggleButton1);
+
+        jButton1.setText("<");
+        topPanel.add(jButton1);
+
+        currentDateLbl.setText("jLabel3");
+        topPanel.add(currentDateLbl);
+
+        jButton2.setText(">");
+        topPanel.add(jButton2);
 
         getContentPane().add(topPanel, java.awt.BorderLayout.PAGE_START);
 
@@ -116,13 +142,8 @@ public class Dashboard extends javax.swing.JFrame {
         jLabel2.setText(language.getString("RESERVS"));
         leftPanel.add(jLabel2);
 
-        jList2.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        jList2.setPreferredSize(new java.awt.Dimension(150, 80));
-        jScrollPane2.setViewportView(jList2);
+        reservationsList.setPreferredSize(new java.awt.Dimension(150, 80));
+        jScrollPane2.setViewportView(reservationsList);
 
         leftPanel.add(jScrollPane2);
 
@@ -130,11 +151,11 @@ public class Dashboard extends javax.swing.JFrame {
 
         rightPanel.setLayout(new javax.swing.BoxLayout(rightPanel, javax.swing.BoxLayout.Y_AXIS));
 
-        jButton1.setText(language.getString("ADDSERVICE"));
-        rightPanel.add(jButton1);
+        addServiceBtn.setText(language.getString("ADDSERVICE"));
+        rightPanel.add(addServiceBtn);
 
-        jButton2.setText(language.getString("CHECKOUT"));
-        rightPanel.add(jButton2);
+        checkOutBtn.setText(language.getString("CHECKOUT"));
+        rightPanel.add(checkOutBtn);
 
         getContentPane().add(rightPanel, java.awt.BorderLayout.LINE_END);
 
@@ -143,79 +164,151 @@ public class Dashboard extends javax.swing.JFrame {
         jLabel1.setText(language.getString("ACTIVEACCM"));
         centrePanel.add(jLabel1);
 
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane1.setViewportView(jList1);
+        jScrollPane1.setViewportView(accmList);
 
         centrePanel.add(jScrollPane1);
 
         getContentPane().add(centrePanel, java.awt.BorderLayout.CENTER);
 
-        jMenu1.setText(language.getString("FILE"));
+        FilejMenu.setText(language.getString("FILE"));
 
         expFileMenu.setText(language.getString("FILEEXP"));
-        jMenu1.add(expFileMenu);
+        expFileMenu.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                expFileMenuMouseReleased(evt);
+            }
+        });
+        FilejMenu.add(expFileMenu);
 
         impFileMenu.setText(language.getString("FILEIMP"));
-        jMenu1.add(impFileMenu);
+        impFileMenu.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                impFileMenuMouseReleased(evt);
+            }
+        });
+        FilejMenu.add(impFileMenu);
 
         settingsMenu.setText(language.getString("SETTINGS"));
-        jMenu1.add(settingsMenu);
+        FilejMenu.add(settingsMenu);
 
-        jMenuBar1.add(jMenu1);
+        jMenuBar1.add(FilejMenu);
 
-        jMenu2.setText(language.getString("ACCOMON"));
+        accomjMenu.setText(language.getString("ACCOMON"));
 
         newAccomodationMenu.setText(language.getString("NEWACCOM"));
-        jMenu2.add(newAccomodationMenu);
-        jMenu2.add(jSeparator1);
+        accomjMenu.add(newAccomodationMenu);
+        accomjMenu.add(jSeparator1);
 
         newCustomerMenu.setText(language.getString("NEWCUST"));
-        jMenu2.add(newCustomerMenu);
+        newCustomerMenu.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                newCustomerMenuMouseReleased(evt);
+            }
+        });
+        accomjMenu.add(newCustomerMenu);
 
         AllCustomersMenu.setText(language.getString("LISTCUST"));
-        jMenu2.add(AllCustomersMenu);
+        AllCustomersMenu.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                AllCustomersMenuMouseReleased(evt);
+            }
+        });
+        accomjMenu.add(AllCustomersMenu);
 
-        jMenuBar1.add(jMenu2);
+        jMenuBar1.add(accomjMenu);
 
         servicesMenu.setText(language.getString("SERVICES"));
 
-        jMenuItem1.setText(language.getString("NEWSERVICE"));
-        servicesMenu.add(jMenuItem1);
+        newServiceMenu.setText(language.getString("NEWSERVICE"));
+        servicesMenu.add(newServiceMenu);
         servicesMenu.add(jSeparator2);
 
-        jMenuItem2.setText(language.getString("NEWROOM"));
-        servicesMenu.add(jMenuItem2);
+        newRoomMenu.setText(language.getString("NEWROOM"));
+        servicesMenu.add(newRoomMenu);
 
-        jMenuItem3.setText(language.getString("ALLROOMS"));
-        servicesMenu.add(jMenuItem3);
+        allRoomsMenu.setText(language.getString("ALLROOMS"));
+        servicesMenu.add(allRoomsMenu);
 
         jMenuBar1.add(servicesMenu);
 
         setJMenuBar(jMenuBar1);
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void newCustomerMenuMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_newCustomerMenuMouseReleased
+        // TODO add your handling code here:
+        AddCustomer newCustWin = new AddCustomer();
+        newCustWin.setVisible(true);
+        
+        newCustWin.createBtn.addActionListener(e ->{
+            if(newCustWin.validateFields()){
+                MainLogic.addCustomer(Customer.getInstance(newCustWin.custNameField.getText()));
+            }
+            newCustWin.setVisible(false);
+        
+        });
+        
+    }//GEN-LAST:event_newCustomerMenuMouseReleased
+
+    private void AllCustomersMenuMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AllCustomersMenuMouseReleased
+        // TODO add your handling code here:
+        
+        CustomersHistory custHistWin = new CustomersHistory();
+        custHistWin.setVisible(true);
+        custHistWin.populateListCustomers();
+    }//GEN-LAST:event_AllCustomersMenuMouseReleased
+
+    private void expFileMenuMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_expFileMenuMouseReleased
+        // TODO add your handling code here:
+        String fileName = JOptionPane.showInputDialog("Zadajte názov súboru pre export");
+        try {
+            objToXmlTest(fileName);
+        } catch (JAXBException ex) {
+            Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, "XML export unsuccessful", ex);
+        }
+        
+    }//GEN-LAST:event_expFileMenuMouseReleased
+
+    private void impFileMenuMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_impFileMenuMouseReleased
+        // TODO add your handling code here:
+        String fileName = JOptionPane.showInputDialog(null, "Zadajte názov súboru s príponou", "Názov súboru", JOptionPane.QUESTION_MESSAGE);
+        try {
+            xmlToObjTest(fileName);
+        } catch (JAXBException ex) {
+            Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, "XML import unsuccessful", ex);
+        }
+        
+    }//GEN-LAST:event_impFileMenuMouseReleased
+
+    private void jButton3MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseReleased
+        // TODO add your handling code here:
+        CheckIn checkInWin = new CheckIn();
+        checkInWin.setVisible(true);
+        
+        
+        
+        
+       
+    }//GEN-LAST:event_jButton3MouseReleased
 
 
     
-    private void objToXmlTest() throws JAXBException{
+    private void objToXmlTest(String fileName) throws JAXBException{
             JAXBContext context = JAXBContext.newInstance(MainLogic.class);
             Marshaller m =context.createMarshaller();
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             //https://www.javaguides.net/2018/10/how-to-convert-java-object-to-xml-jaxb-marshalling.html
-            m.marshal(logic, new File("hotel-data.xml"));
+            m.marshal(logic, new File(fileName));
     }
     
     
-    private void xmlToObjTest() throws JAXBException{
+    private void xmlToObjTest(String fileName) throws JAXBException{
         
         JAXBContext context = JAXBContext.newInstance(MainLogic.class);
         Unmarshaller un = context.createUnmarshaller();
-        MainLogic logicXml = (MainLogic) un.unmarshal(new File("hotel-data.xml"));
+        MainLogic logicXml = (MainLogic) un.unmarshal(new File(fileName));
         
         ArrayList<Room> rooms = MainLogic.getRooms();
         for (Room room : rooms) {
@@ -223,10 +316,31 @@ public class Dashboard extends javax.swing.JFrame {
         }
         
     }
+    
+    public void populateListsAccmResv(){
+        DefaultListModel<Accomodation> modelAccm = new DefaultListModel<>();
+        DefaultListModel<Reservation> modelResv = new DefaultListModel<>();
+        for (Reservation reservation : MainLogic.getReservationsList()) {
+            modelResv.addElement(reservation);
+        }
+        for (Accomodation accomodation : MainLogic.getAccommodation()) {
+            modelAccm.addElement(accomodation);
+        }
+        
+        this.accmList.setModel(modelAccm);
+        this.reservationsList.setModel(modelResv);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem AllCustomersMenu;
+    private javax.swing.JMenu FilejMenu;
+    private javax.swing.JList<Accomodation> accmList;
+    private javax.swing.JMenu accomjMenu;
+    private javax.swing.JButton addServiceBtn;
+    private javax.swing.JMenuItem allRoomsMenu;
     private javax.swing.JPanel centrePanel;
+    private javax.swing.JButton checkOutBtn;
+    private javax.swing.JLabel currentDateLbl;
     private javax.swing.JMenuItem expFileMenu;
     private javax.swing.JMenuItem impFileMenu;
     private javax.swing.JButton jButton1;
@@ -234,22 +348,19 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JList<String> jList1;
-    private javax.swing.JList<String> jList2;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
+    private javax.swing.JToggleButton jToggleButton1;
     private javax.swing.JPanel leftPanel;
     private javax.swing.JMenuItem newAccomodationMenu;
     private javax.swing.JMenuItem newCustomerMenu;
     private javax.swing.JButton newReservationBtn;
+    private javax.swing.JMenuItem newRoomMenu;
+    private javax.swing.JMenuItem newServiceMenu;
+    private javax.swing.JList<Reservation> reservationsList;
     private javax.swing.JPanel rightPanel;
     private javax.swing.JMenu servicesMenu;
     private javax.swing.JMenuItem settingsMenu;

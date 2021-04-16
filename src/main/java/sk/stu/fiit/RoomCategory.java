@@ -33,6 +33,11 @@ public class RoomCategory {
         roomCategory.setAttributes(pricePerNight, note);
         return roomCategory;
     }
+
+    public double getPricePerNight() {
+        return pricePerNight;
+    }
+    
     
     
 }
